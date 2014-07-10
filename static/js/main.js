@@ -19,15 +19,17 @@
                 add_ticket(message);
             } else if (message === "remove:ticket") {
                 remove_ticket(message);
+            } else if (message === "test") {
+                console.log("RECEIVED")
             } else {
                 alert("Helperbot malfunction! Refresh your browser ;_;")
             }
         };   
         
         // ask for the initial list of tickets
-        socket.onopen(function(){
+        socket.onopen = function(){
             socket.send("get:list");
-        });
+        };
 
         return socket;
     }
@@ -81,7 +83,7 @@
 
         e.preventDefault();
         socket.send({
-            "new_ticket": $("#new_ticket").serialize // this is a string of the form data
+            "new_ticket": $("#new_ticket").serialize() // this is a string of the form data
         });
     }
 
@@ -99,8 +101,8 @@
     function main () {
         var socket = start_socket();
 
-        $("#new_ticket").click(submit_form(socket, e))
-        $(".remove").click(mark_ticket_complete(socket, e))
+        $("#new_ticket").click(function (e) { submit_new(socket,e) })
+        $(".remove").click(function (e) { mark_ticket_complete(socket,e) })
     }   
 
     main ();
