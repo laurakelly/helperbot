@@ -7,28 +7,31 @@
          */
         
         // open the socket
-        var socket = new WebSocket("ws://localhost:5000/socketserver");
+        var socket = new WebSocket("ws://localhost:8000/socketserver");
+        window.socket = socket
 
         // initialize socket event handlers
         socket.onmessage = function (event) {
-            var message = JSON.parse(event.data);
+            debugger
+            var message = event;
 
-            if (message === "initialize_tickets"){
+            if (typeof message["initialize_tickets"] !== 'undefined'){
+                debugger
                 initialize_tickets(message);
             } else if (message === "add:ticket") {
                 add_ticket(message);
             } else if (message === "remove:ticket") {
                 remove_ticket(message);
-            } else if (message === "test") {
-                console.log("RECEIVED")
             } else {
+                debugger
                 alert("Helperbot malfunction! Refresh your browser ;_;")
             }
         };   
         
         // ask for the initial list of tickets
         socket.onopen = function(){
-            socket.send("get:list");
+            socket.send("test");
+            //socket.send("get:list");
         };
 
         return socket;
@@ -81,6 +84,7 @@
          * @param e - click event
          */
 
+        debugger
         e.preventDefault();
         socket.send({
             "new_ticket": $("#new_ticket").serialize() // this is a string of the form data
@@ -101,7 +105,9 @@
     function main () {
         var socket = start_socket();
 
-        $("#new_ticket").click(function (e) { submit_new(socket,e) })
+        $("[type='submit']").click(function (anything) {
+            debugger
+            submit_new(socket,e) })
         $(".remove").click(function (e) { mark_ticket_complete(socket,e) })
     }   
 
